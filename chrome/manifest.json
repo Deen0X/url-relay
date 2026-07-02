@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "URL Relay",
+  "version": "1.0.0",
+  "description": "Detecta y envía streams de video, enlaces y páginas a tu propio webhook. Herramienta de productividad para desarrolladores.",
+  "key": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEMeyz8q2+ePHNERGnVOoe6gChOv2qElMBGrERoLrPhdC3UKovpll11AI7eSUNp6xa9Ep8dFOqaOLlkzjz/8HqFw==",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "activeTab",
+    "cookies",
+    "webRequest",
+    "scripting",
+    "notifications",
+    "clipboardWrite"
+  ],
+  "optional_permissions": ["downloads"],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content-scanner.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "URL Relay",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

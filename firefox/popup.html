@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --bg: #161b22; --card: #0d1117; --text: #e6edf3; --text2: #8b949e; --accent: #0078D4; --border: #30363d; --radius: 6px; --success: #2ea043; --error: #f85149; }
+body { width: 440px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 12px; max-height: 560px; overflow-y: auto; }
+h1 { font-size: 16px; display: flex; align-items: center; gap: 8px; }
+h2 { font-size: 13px; color: var(--text2); margin: 12px 0 8px; display: flex; align-items: center; gap: 6px; }
+h2 .badge { font-size: 11px; background: var(--accent); color: #fff; padding: 1px 6px; border-radius: 10px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.header a { color: var(--accent); font-size: 12px; text-decoration: none; cursor: pointer; }
+#configBtn { background: none; border: none; color: var(--text2); font-size: 16px; cursor: pointer; padding: 4px; }
+.item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 6px; }
+.stream-item { display: flex; gap: 10px; align-items: flex-start; }
+.stream-item.playing { border-color: var(--success); box-shadow: inset 0 0 0 1px var(--success); }
+.stream-info { flex: 1; min-width: 0; }
+.item-header { display: flex; align-items: center; gap: 8px; }
+.item-url { flex: 1; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item-meta { font-size: 11px; color: var(--text2); margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap; }
+.item-source { font-size: 10px; color: var(--text2); background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px; }
+.item-actions { display: flex; gap: 4px; margin-top: 6px; }
+.item-actions button { padding: 4px 10px; font-size: 11px; border: 1px solid var(--border); background: var(--bg); color: var(--text); border-radius: 3px; cursor: pointer; }
+.item-actions .btn-send { background: var(--accent); color: #fff; border-color: var(--accent); }
+.item-actions .btn-send:hover { opacity: 0.85; }
+.item-actions .btn-send:disabled { opacity: 0.5; cursor: default; }
+.empty { color: var(--text2); font-size: 13px; text-align: center; padding: 16px 0; }
+#statusBar { font-size: 12px; padding: 6px 10px; border-radius: var(--radius); margin-bottom: 8px; display: none; }
+#statusBar.info { display: block; background: rgba(0,120,212,0.15); color: var(--accent); }
+#statusBar.success { display: block; background: rgba(46,160,67,0.15); color: var(--success); }
+#statusBar.error { display: block; background: rgba(248,81,73,0.15); color: var(--error); }
+.footer { text-align: center; padding-top: 8px; border-top: 1px solid var(--border); margin-top: 8px; }
+.footer a { color: var(--text2); font-size: 12px; text-decoration: none; cursor: pointer; }
+.pill { font-size: 10px; padding: 1px 6px; border-radius: 8px; background: rgba(0,120,212,0.15); color: var(--accent); }
+.dot-playing { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--success); margin-right: 4px; vertical-align: middle; }
+.toolbar-row { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
+.solo-label { font-size: 12px; display: flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; white-space: nowrap; }
+.solo-label input { accent-color: var(--accent); }
+#refreshBtn { background: none; border: none; color: var(--text2); font-size: 14px; cursor: pointer; padding: 2px 6px; border-radius: 3px; flex-shrink: 0; }
+#refreshBtn:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1><span>📡</span> URL Relay</h1>
+  <button id="configBtn" title="Configuración">⚙️</button>
+</div>
+
+<div id="statusBar"></div>
+
+<div class="toolbar-row">
+  <label class="solo-label"><input type="checkbox" id="filterActive"> 🔴 Solo reproduciendo</label>
+  <button id="refreshBtn" title="Refrescar detección de streams">🔄</button>
+</div>
+
+<h2>🏞️ Streams detectados <span class="badge" id="streamCount">0</span></h2>
+<div id="streamsList"><div class="empty">No se detectaron streams. Navega a un video y abre esta ventana.</div></div>
+
+<div class="footer"><a id="openFrontend">⚙️ Configurar endpoint →</a></div>
+<script src="popup.js"></script>
+</body>
+</html>
