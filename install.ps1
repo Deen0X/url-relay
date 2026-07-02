@@ -3,11 +3,11 @@
 <#
 .SYNOPSIS
     URL Relay - Browser Extension Installer
-    Descarga e instala la extensiÃ³n URL Relay para Chrome y Firefox.
+    Descarga e instala la extensión URL Relay para Chrome y Firefox.
 
 .DESCRIPTION
-    Este script descarga la Ãºltima versiÃ³n de URL Relay desde GitHub Releases,
-    la extrae en una ubicaciÃ³n permanente y la registra en el navegador.
+    Este script descarga la ultima version de URL Relay desde GitHub Releases,
+    la extrae en una ubicacion permanente y la registra en el navegador.
     No requiere permisos de administrador.
 
     Compatibilidad:
@@ -15,42 +15,32 @@
     - Chrome / Edge (Chromium) / Firefox
 
 .PARAMETER Browser
-    Fuerza la instalaciÃ³n para un navegador especÃ­fico:
-    "Chrome", "Firefox", "Edge" o "Auto" (detecta automÃ¡ticamente, por defecto)
+    Fuerza la instalacion para un navegador especifico:
+    "Chrome", "Firefox", "Edge" o "Auto" (detecta automaticamente, por defecto)
 
 .PARAMETER Repo
-    URL del repositorio GitHub (usuario/repo). Por defecto: el configurado abajo.
+    URL del repositorio GitHub (usuario/repo). Por defecto: Deen0X/url-relay.
 
 .PARAMETER Tag
-    Tag de release especÃ­fico. Por defecto: "latest".
+    Tag de release especifico. Por defecto: "latest".
 
 .EXAMPLE
     .\install.ps1
-    EjecuciÃ³n interactiva con detecciÃ³n automÃ¡tica del navegador.
+    Ejecucion interactiva con deteccion automatica del navegador.
 
 .EXAMPLE
     .\install.ps1 -Browser Firefox
     Instala solo para Firefox.
-
-.EXAMPLE
-    .\install.ps1 -Browser Chrome
-    Instala solo para Chrome.
 #>
 
 param(
     [ValidateSet("Auto", "Chrome", "Firefox", "Edge")]
     [string]$Browser = "Auto",
-
     [string]$Repo = "Deen0X/url-relay",
-
     [string]$Tag = "latest"
 )
 
-# â”€â”€â”€ CONFIGURACIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# CAMBIA ESTO ANTES DE DISTRIBUIR:
-# $Repo = "tu-usuario/url-relay"
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
+# --- CONFIGURACION --------------------------------------------------
 $CHROME_ID    = "kefplkpcljcdphiabegokfdpedadgbda"
 $FIREFOX_ID   = "url-relay-kefplkpc@url-relay"
 $APP_NAME     = "URL-Relay"
@@ -61,23 +51,12 @@ $CHROME_X86_PATH  = "$env:LOCALAPPDATA\Google\Chrome SxS\User Data"
 $EDGE_PATH        = "$env:LOCALAPPDATA\Microsoft\Edge\User Data"
 $FIREFOX_PROFILES = "$env:APPDATA\Mozilla\Firefox\Profiles"
 
-# â”€â”€â”€ FUNCIONES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# --- FUNCIONES ------------------------------------------------------ 
 
-function Write-Step($msg) {
-    Write-Host "==> $msg" -ForegroundColor Cyan
-}
-
-function Write-OK($msg) {
-    Write-Host "  [OK] $msg" -ForegroundColor Green
-}
-
-function Write-Warn($msg) {
-    Write-Host "  [!] $msg" -ForegroundColor Yellow
-}
-
-function Write-Err($msg) {
-    Write-Host "  [ERR] $msg" -ForegroundColor Red
-}
+function Write-Step($msg) { Write-Host "==> $msg" -ForegroundColor Cyan }
+function Write-OK($msg)   { Write-Host "  [OK] $msg" -ForegroundColor Green }
+function Write-Warn($msg) { Write-Host "  [!] $msg" -ForegroundColor Yellow }
+function Write-Err($msg)  { Write-Host "  [ERR] $msg" -ForegroundColor Red }
 
 function Test-Admin {
     $id = [System.Security.Principal.WindowsIdentity]::GetCurrent()
@@ -91,9 +70,7 @@ function Get-ChromePath {
         "${env:ProgramFiles}\Google\Chrome\Application\chrome.exe",
         "${env:ProgramFiles(x86)}\Google\Chrome\Application\chrome.exe"
     )
-    foreach ($p in $paths) {
-        if (Test-Path $p) { return $p }
-    }
+    foreach ($p in $paths) { if (Test-Path $p) { return $p } }
     return $null
 }
 
@@ -102,9 +79,7 @@ function Get-FirefoxPath {
         "${env:ProgramFiles}\Mozilla Firefox\firefox.exe",
         "${env:ProgramFiles(x86)}\Mozilla Firefox\firefox.exe"
     )
-    foreach ($p in $paths) {
-        if (Test-Path $p) { return $p }
-    }
+    foreach ($p in $paths) { if (Test-Path $p) { return $p } }
     return $null
 }
 
@@ -114,29 +89,21 @@ function Get-FirefoxProfile {
 
     $content = Get-Content $iniPath -Raw
     $default = $null
-    $install = $null
+    $installFb = $null
 
-    if ($content -match 'Default=(.+\.default-release)') {
-        $default = $matches[1]
-    }
-    elseif ($content -match 'Default=(.+\.default)') {
-        $default = $matches[1]
-    }
-
-    if ($content -match 'InstallDirectory=(.+)') {
-        $install = $matches[1]
-    }
+    if ($content -match 'Default=(.+\.default-release)') { $default = $matches[1] }
+    elseif ($content -match 'Default=(.+\.default)') { $default = $matches[1] }
+    if ($content -match 'InstallDirectory=(.+)') { $installFb = $matches[1] }
 
     if ($default) {
         $profilePath = "$env:APPDATA\Mozilla\Firefox\Profiles\$default"
         if (Test-Path $profilePath) { return $profilePath }
     }
-    if ($install) {
-        $profilePath = "$env:APPDATA\Mozilla\Firefox\Profiles\$install"
+    if ($installFb) {
+        $profilePath = "$env:APPDATA\Mozilla\Firefox\Profiles\$installFb"
         if (Test-Path $profilePath) { return $profilePath }
     }
 
-    # fallback: buscar cualquier perfil
     $dirs = Get-ChildItem -Path $FIREFOX_PROFILES -Directory -ErrorAction SilentlyContinue
     if ($dirs) { return $dirs[0].FullName }
 
@@ -145,20 +112,15 @@ function Get-FirefoxProfile {
 
 function Get-ChromeUserData {
     $paths = @($CHROME_X64_PATH, $CHROME_X86_PATH, $EDGE_PATH)
-    foreach ($p in $paths) {
-        if (Test-Path "$p\Local State") { return $p }
-    }
+    foreach ($p in $paths) { if (Test-Path "$p\Local State") { return $p } }
     return $null
 }
 
 function Download-Release {
     param([string]$AssetName)
 
-    if ($Tag -eq "latest") {
-        $apiUrl = "https://api.github.com/repos/$Repo/releases/latest"
-    } else {
-        $apiUrl = "https://api.github.com/repos/$Repo/releases/tags/$Tag"
-    }
+    if ($Tag -eq "latest") { $apiUrl = "https://api.github.com/repos/$Repo/releases/latest" }
+    else { $apiUrl = "https://api.github.com/repos/$Repo/releases/tags/$Tag" }
 
     Write-Step "Consultando releases de $Repo..."
     try {
@@ -170,7 +132,7 @@ function Download-Release {
 
     $asset = $release.assets | Where-Object { $_.name -eq $AssetName }
     if (!$asset) {
-        Write-Err "No se encontrÃ³ asset: $AssetName"
+        Write-Err "No se encontro asset: $AssetName"
         Write-Warn "Assets disponibles:"
         $release.assets | ForEach-Object { Write-Warn "  - $($_.name)" }
         return $null
@@ -191,50 +153,32 @@ function Install-ChromeExtension {
     param([string]$ZipPath)
 
     Write-Step "Instalando en Chrome..."
-
-    if (!(Get-ChromePath)) {
-        Write-Warn "Chrome no estÃ¡ instalado. Omitiendo."
-        return $false
-    }
+    if (!(Get-ChromePath)) { Write-Warn "Chrome no instalado. Omitiendo."; return $false }
 
     $extDir = "$INSTALL_DIR\chrome\$CHROME_ID"
     New-Item -ItemType Directory -Path $extDir -Force | Out-Null
 
     Write-Step "Extrayendo archivos a $extDir..."
-    try {
-        Expand-Archive -Path $ZipPath -DestinationPath $extDir -Force
-    } catch {
-        Write-Err "Error al extraer ZIP: $_"
-        return $false
-    }
+    try { Expand-Archive -Path $ZipPath -DestinationPath $extDir -Force }
+    catch { Write-Err "Error al extraer ZIP: $_"; return $false }
 
-    # Crear polÃ­tica Chrome para cargar la extensiÃ³n
     $policyDir = "$CHROME_X64_PATH\Policy\managed"
-    if (!(Test-Path "$CHROME_X64_PATH\Local State")) {
-        $policyDir = "$CHROME_X86_PATH\Policy\managed"
-    }
-
+    if (!(Test-Path "$CHROME_X64_PATH\Local State")) { $policyDir = "$CHROME_X86_PATH\Policy\managed" }
     New-Item -ItemType Directory -Path $policyDir -Force | Out-Null
 
-    $policy = @"
+    $policyContent = @'
 {
   "ExtensionSettings": {
-    "$CHROME_ID": {
+    "kefplkpcljcdphiabegokfdpedadgbda": {
       "installation_mode": "force_installed",
-      "update_url": "https://raw.githubusercontent.com/$Repo/main/chrome-updates.xml"
+      "update_url": "https://raw.githubusercontent.com/Deen0X/url-relay/main/chrome-updates.xml"
     }
   }
 }
-"@
+'@
+    Set-Content -Path "$policyDir\url-relay.json" -Value $policyContent -Encoding UTF8
+    Write-OK "Politica Chrome creada en $policyDir\url-relay.json"
 
-    $policyPath = "$policyDir\url-relay.json"
-    Set-Content -Path $policyPath -Value $policy -Encoding UTF8
-    Write-OK "PolÃ­tica Chrome creada: $policyPath"
-
-    # Crear Chrome Policies para que acepte la extensiÃ³n sin developer mode
-    Write-Step "Configurando polÃ­ticas de Chrome..."
-
-    # Crear acceso directo en escritorio con --load-extension (fallback)
     $desktop = [Environment]::GetFolderPath("Desktop")
     $chromeExe = Get-ChromePath
     if ($chromeExe -and $desktop) {
@@ -245,15 +189,12 @@ function Install-ChromeExtension {
         $shortcut.Arguments = "--load-extension=`"$extDir`""
         $shortcut.Description = "Abre Chrome con URL Relay cargada"
         $shortcut.Save()
-        Write-OK "Acceso directo creado: $shortcutPath"
+        Write-OK "Acceso directo en escritorio: URL Relay - Chrome.lnk"
     }
 
-    Write-OK "Chrome: extensiÃ³n instalada en $extDir"
-    Write-Warn "NOTA: Chrome requiere que abras el navegador con el acceso directo creado"
-    Write-Warn "      (URL Relay - Chrome.lnk) en tu escritorio para cargar la extensiÃ³n."
-    Write-Warn "      En chrome://extensions aparecerÃ¡ como 'Cargada sin empaquetar'."
-    Write-Warn "      Activa 'Modo desarrollador' UNA VEZ si ves el mensaje 'Desactivar modo desarrollador'."
-
+    Write-OK "Chrome: extension instalada en $extDir"
+    Write-Warn "Abre Chrome usando el acceso directo 'URL Relay - Chrome' en tu escritorio."
+    Write-Warn "En chrome://extensions, activa 'Modo desarrollador' UNA VEZ si es necesario."
     return $true
 }
 
@@ -261,71 +202,53 @@ function Install-FirefoxExtension {
     param([string]$ZipPath)
 
     Write-Step "Instalando en Firefox..."
-
-    if (!(Get-FirefoxPath)) {
-        Write-Warn "Firefox no estÃ¡ instalado. Omitiendo."
-        return $false
-    }
+    if (!(Get-FirefoxPath)) { Write-Warn "Firefox no instalado. Omitiendo."; return $false }
 
     $profile = Get-FirefoxProfile
-    if (!$profile) {
-        Write-Err "No se encontrÃ³ perfil de Firefox en $FIREFOX_PROFILES"
-        return $false
-    }
+    if (!$profile) { Write-Err "No se encontro perfil de Firefox"; return $false }
 
     $extDir = "$profile\extensions"
     New-Item -ItemType Directory -Path $extDir -Force | Out-Null
-
-    # Firefox espera un XPI (que es un ZIP con otra extensiÃ³n)
     $xpiPath = "$extDir\$FIREFOX_ID.xpi"
 
-    Write-Step "Copiando extensiÃ³n a $xpiPath..."
-    try {
-        Copy-Item -Path $ZipPath -Destination $xpiPath -Force
-    } catch {
-        Write-Err "Error al copiar: $_"
-        return $false
-    }
+    Write-Step "Copiando extension a $xpiPath..."
+    try { Copy-Item -Path $ZipPath -Destination $xpiPath -Force }
+    catch { Write-Err "Error al copiar: $_"; return $false }
 
-    Write-OK "Firefox: extensiÃ³n copiada a $xpiPath"
-    Write-Warn "NOTA: Al reiniciar Firefox, aparecerÃ¡ un mensaje preguntando si"
-    Write-Warn "      permites la extensiÃ³n. Haz clic en 'Permitir' (solo la primera vez)."
-
+    Write-OK "Firefox: extension copiada a $xpiPath"
+    Write-Warn "Reinicia Firefox. Aparecera un mensaje, haz clic en 'Permitir' (solo la primera vez)."
     return $true
 }
 
-# â”€â”€â”€ MAIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# --- MAIN -----------------------------------------------------------
 
 Clear-Host
-Write-Host "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—" -ForegroundColor Cyan
-Write-Host "â•‘        URL Relay - Instalador             â•‘" -ForegroundColor Cyan
-Write-Host "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•" -ForegroundColor Cyan
+Write-Host "====================================" -ForegroundColor Cyan
+Write-Host "    URL Relay - Instalador" -ForegroundColor Cyan
+Write-Host "====================================" -ForegroundColor Cyan
 Write-Host ""
 
-if (Test-Admin) {
-    Write-Warn "Ejecutando como administrador. No es necesario."
-}
+if (Test-Admin) { Write-Warn "Ejecutando como administrador. No es necesario." }
 
-# â”€â”€â”€ 1. Seleccionar navegador â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
+# --- 1. Seleccionar navegador ---------------------------------------
 if ($Browser -eq "Auto") {
     $hasChrome = [bool](Get-ChromePath)
     $hasFirefox = [bool](Get-FirefoxPath)
 
     if (!$hasChrome -and !$hasFirefox) {
-        Write-Err "No se detectÃ³ Chrome ni Firefox instalados."
-        Write-Host "Instala primero un navegador compatible y vuelve a ejecutar este script."
+        Write-Err "No se detecto Chrome ni Firefox instalados."
+        Write-Host "Instala un navegador compatible y vuelve a ejecutar este script."
         exit 1
     }
 
-    Write-Host "Navegadores detectados:" -ForegroundColor White
-    if ($hasChrome) { Write-Host "  [C] Chrome" -ForegroundColor Green }
+    Write-Host "Navegadores detectados:"
+    if ($hasChrome)  { Write-Host "  [C] Chrome" -ForegroundColor Green }
     if ($hasFirefox) { Write-Host "  [F] Firefox" -ForegroundColor Green }
 
-    $selection = Read-Host "`nÂ¿Instalar para ambos? (S/n)"
+    $selection = Read-Host "`nInstalar para ambos? (S/n)"
     if ($selection -eq "n" -or $selection -eq "N") {
-        $selection = Read-Host "Â¿CuÃ¡l? (C=Chrome, F=Firefox)"
-        switch ($selection.ToUpper()) {
+        $sel2 = Read-Host "Cual? (C=Chrome, F=Firefox)"
+        switch ($sel2.ToUpper()) {
             "C" { $Browser = "Chrome" }
             "F" { $Browser = "Firefox" }
             default { $Browser = "Auto" }
@@ -335,68 +258,51 @@ if ($Browser -eq "Auto") {
     }
 }
 
-# â”€â”€â”€ 2. Descargar ZIP(s) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# --- 2. Descargar ZIP(s) --------------------------------------------
+$installChrome  = ($Browser -eq "Auto" -or $Browser -eq "Chrome" -or $Browser -eq "Edge")
+$installFirefox = ($Browser -eq "Auto" -or $Browser -eq "Firefox")
 
-$installChrome = $Browser -eq "Auto" -or $Browser -eq "Chrome" -or $Browser -eq "Edge"
-$installFirefox = $Browser -eq "Auto" -or $Browser -eq "Firefox"
-
-$chromeZip = $null
+$chromeZip  = $null
 $firefoxZip = $null
 
 if ($installChrome) {
     $chromeZip = Download-Release -AssetName "url-relay-chrome.zip"
     if (!$chromeZip) { $installChrome = $false }
 }
-
 if ($installFirefox) {
     $firefoxZip = Download-Release -AssetName "url-relay-firefox.zip"
     if (!$firefoxZip) { $installFirefox = $false }
 }
 
-# â”€â”€â”€ 3. Instalar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# --- 3. Instalar ----------------------------------------------------
+if ($installChrome)  { Install-ChromeExtension -ZipPath $chromeZip }
+if ($installFirefox) { Install-FirefoxExtension -ZipPath $firefoxZip }
 
-if ($installChrome) {
-    Install-ChromeExtension -ZipPath $chromeZip
-}
-
-if ($installFirefox) {
-    Install-FirefoxExtension -ZipPath $firefoxZip
-}
-
-# â”€â”€â”€ 4. Resumen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
+# --- 4. Resumen -----------------------------------------------------
 Write-Host ""
-Write-Host "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—" -ForegroundColor Cyan
-Write-Host "â•‘           INSTALACIÃ“N COMPLETADA          â•‘" -ForegroundColor Cyan
-Write-Host "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•" -ForegroundColor Cyan
+Write-Host "====================================" -ForegroundColor Cyan
+Write-Host "       INSTALACION COMPLETADA" -ForegroundColor Cyan
+Write-Host "====================================" -ForegroundColor Cyan
 Write-Host ""
 
 if ($installChrome) {
     Write-Host "Chrome:"
     Write-Host "  1. Abre chrome://extensions/"
-    Write-Host "  2. Activa 'Modo desarrollador' (esquina superior derecha)"
-    Write-Host "  3. Haz clic en 'Cargar extensiÃ³n sin empaquetar'"
+    Write-Host "  2. Activa 'Modo desarrollador' (esquina sup. derecha)"
+    Write-Host "  3. Clic en 'Cargar extension sin empaquetar'"
     Write-Host "  4. Selecciona: $INSTALL_DIR\chrome\$CHROME_ID"
-    Write-Host "  O bien usa el acceso directo 'URL Relay - Chrome' en tu escritorio."
     Write-Host ""
 }
 
 if ($installFirefox) {
     Write-Host "Firefox:"
-    Write-Host "  1. Reinicia Firefox (ciÃ©rralo y Ã¡brelo de nuevo)"
-    Write-Host "  2. Cuando aparezca el mensaje 'Permitir extensiÃ³n', haz clic en PERMITIR"
-    Write-Host "  3. VerÃ¡s la extensiÃ³n en about:addons"
+    Write-Host "  1. Reinicia Firefox (cierralo y abrelo de nuevo)"
+    Write-Host "  2. Cuando aparezca el mensaje, haz clic en PERMITIR"
     Write-Host ""
 }
 
-# Preguntar si abrir carpeta de instalaciÃ³n
-$resp = Read-Host "Â¿Abrir carpeta de instalaciÃ³n? (s/N)"
-if ($resp -eq "s" -or $resp -eq "S") {
-    Invoke-Item $INSTALL_DIR
-}
+$resp = Read-Host "Abrir carpeta de instalacion? (s/N)"
+if ($resp -eq "s" -or $resp -eq "S") { Invoke-Item $INSTALL_DIR }
 
-# Preguntar si abrir GitHub
-$resp = Read-Host "Â¿Abrir pÃ¡gina de GitHub? (s/N)"
-if ($resp -eq "s" -or $resp -eq "S") {
-    Start-Process "https://github.com/$Repo"
-}
+$resp = Read-Host "Abrir pagina de GitHub? (s/N)"
+if ($resp -eq "s" -or $resp -eq "S") { Start-Process "https://github.com/$Repo" }
