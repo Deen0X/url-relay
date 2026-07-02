@@ -2,135 +2,34 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>URL Relay — Configuración</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg: #161b22;
-  --card: #0d1117;
-  --text: #e6edf3;
-  --text2: #8b949e;
-  --accent: #0078D4;
-  --border: #30363d;
-  --success: #2ea043;
-  --error: #f85149;
-  --radius: 6px;
-}
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  padding: 32px 24px;
-  max-width: 640px;
-  margin: 0 auto;
-}
-h1 { font-size: 22px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.subtitle { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 16px;
-}
-.card h2 { font-size: 14px; margin-bottom: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; }
-label { display: block; font-size: 13px; margin-bottom: 4px; color: var(--text2); }
-input, select {
-  width: 100%;
-  padding: 8px 12px;
-  font-size: 14px;
-  background: var(--bg);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 12px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-input:focus, select:focus { border-color: var(--accent); }
-input[type="password"] { font-family: monospace; }
-.hint { font-size: 11px; color: var(--text2); margin-top: -8px; margin-bottom: 12px; line-height: 1.4; }
-.row { display: flex; gap: 8px; align-items: flex-start; }
-.row input { flex: 1; }
-button {
-  padding: 8px 16px;
-  font-size: 13px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  border-radius: var(--radius);
-  cursor: pointer;
-  white-space: nowrap;
-}
-button:hover { background: rgba(255,255,255,0.06); }
-.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-.btn-primary:hover { opacity: 0.85; }
-#status { margin-top: 8px; font-size: 13px; padding: 8px 12px; border-radius: var(--radius); }
-#status.ok { background: rgba(46,160,67,0.15); color: var(--success); }
-#status.err { background: rgba(248,81,73,0.15); color: var(--error); }
-#status.info { background: rgba(0,120,212,0.15); color: var(--accent); }
-.test-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
-.test-row button { margin-bottom: 12px; }
-.test-result { font-size: 12px; padding: 6px 10px; border-radius: 4px; flex: 1; }
-.test-result.ok { background: rgba(46,160,67,0.12); color: var(--success); }
-.test-result.err { background: rgba(248,81,73,0.12); color: var(--error); }
-.saved-msg { font-size: 12px; color: var(--success); display: none; margin-left: 8px; }
+:root { --bg: #0d1117; --card: #161b22; --text: #e6edf3; --text2: #8b949e; --accent: #0078D4; --border: #30363d; --radius: 8px; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; display: flex; justify-content: center; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 32px; width: 100%; max-width: 420px; }
+h1 { font-size: 20px; margin-bottom: 24px; }
+label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; margin-top: 16px; }
+input { width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 14px; }
+input:focus { outline: none; border-color: var(--accent); }
+button { width: 100%; padding: 12px; margin-top: 24px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; }
+button:hover { opacity: 0.9; }
+#status { margin-top: 12px; font-size: 13px; color: var(--text2); text-align: center; }
+.hint { font-size: 12px; color: var(--text2); margin-top: 4px; }
 </style>
 </head>
 <body>
-
-<h1>📡 URL Relay</h1>
-<p class="subtitle">Configura tu propio endpoint para recibir URLs y streams detectados.</p>
-
 <div class="card">
-  <h2>Webhook</h2>
-
-  <label for="endpoint">Endpoint URL</label>
-  <div class="row">
-    <input type="url" id="endpoint" placeholder="https://tuserver.com/api/hook" autocomplete="url">
-  </div>
-  <div class="hint">Dirección de tu servidor. HTTPS obligatorio si no es localhost.</div>
-
-  <label for="token">Auth Token (opcional)</label>
-  <input type="password" id="token" placeholder="Bearer token...">
-  <div class="hint">Se envía como cabecera <code>Authorization: Bearer &lt;token&gt;</code>.</div>
-
-  <div class="test-row">
-    <button id="testBtn" class="btn-primary">🔗 Probar conexión</button>
-    <span id="testResult" class="test-result"></span>
-  </div>
+  <h1>⚙️ Configuración del Addon</h1>
+  <label>URL del Backend</label>
+  <input type="text" id="backendUrl" placeholder="http://192.168.1.100:5900">
+  <div class="hint">Dirección del servidor DNX Downloader</div>
+  <label>Usuario</label>
+  <input type="text" id="username" placeholder="usuario">
+  <label>Contraseña</label>
+  <input type="password" id="password" placeholder="contraseña">
+  <button id="saveBtn">Guardar</button>
+  <div id="status"></div>
 </div>
-
-<div class="card">
-  <h2>Fallback (sin endpoint)</h2>
-  <p class="hint" style="margin-top:0">Cuando no hay endpoint configurado o la conexión falla:</p>
-
-  <label for="fallbackMode">Modo de fallback</label>
-  <select id="fallbackMode">
-    <option value="both">Copiar al portapapeles + Descargar .txt</option>
-    <option value="clipboard">Solo copiar al portapapeles</option>
-    <option value="file">Solo descargar archivo .txt</option>
-  </select>
-</div>
-
-<div class="card">
-  <h2>Acerca de</h2>
-  <p style="font-size:13px;color:var(--text2);line-height:1.5;">
-    <strong>URL Relay</strong> v1.0.0 — Detecta streams de video y URLs en cualquier página
-    y los envía a tu propio webhook. Sin dependencia en la nube.
-    <br><br>
-    Compatible con Chrome, Edge y Firefox.
-  </p>
-</div>
-
-<div style="display:flex;gap:8px;align-items:center;margin-bottom:16px;">
-  <button id="saveBtn" class="btn-primary">💾 Guardar configuración</button>
-  <span id="savedMsg" class="saved-msg">✅ Guardado</span>
-</div>
-
-<div id="status"></div>
-
 <script src="options.js"></script>
 </body>
 </html>
